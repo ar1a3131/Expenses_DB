@@ -19,13 +19,33 @@ const pool = new Pool({
 });
 
 // Routes
-app.get('/api/rows', async (req, res) => {
+app.get('/api/filtered-rows', async (req, res) => {
+    const { name, department, is_recurring_expense } = req.query;
+
+    // Base query
+    let query = 'SELECT * FROM transactions WHERE 1=1';
+    const params = [];
+
+    // Add conditions based on the request query
+    if (name) {
+        query += ' AND name ILIKE $1';
+        params.push(`%${name}%`);
+    }
+    if (department) {
+        query += ' AND department = $2';
+        params.push(department);
+    }
+    if (is_recurring_expense) {
+        query += ' AND is_recurring_expense = $3';
+        params.push(is_recurring_expense === 'true' ? '1' : '0');
+    }
+
     try {
-        const result = await pool.query('SELECT * FROM transactions');
+        const result = await pool.query(query, params);
         res.json(result.rows);
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error retrieving data from the database');
+        console.error('Error fetching filtered data:', error);
+        res.status(500).send('Error retrieving data');
     }
 });
 
