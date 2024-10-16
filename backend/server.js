@@ -11,8 +11,8 @@ app.use(express.json());
 
 // Connect to PostgreSQL
 const pool = new Pool({
-    user: '',
-    host: '',
+    user: 'postgres',
+    host: 'localhost',
     database: 'BudgetDB',
     password: 'Trace-Reroute4',
     port: 8080, // Default PostgreSQL port = 5432
@@ -29,17 +29,21 @@ app.get('/api/rows', async (req, res) => {
     }
 });
 
-app.post('/api/add-row', async (req, res) => {
-    const { date, amount, department, description, is_recurring_expenses } = req.body; // Adjust based on table structure
+app.post('/api/add-transaction', async (req, res) => {
+    const { date, amount, department, name, description, is_recurring_expense } = req.body;
     try {
-        const result = await pool.query('INSERT INTO transactions (date, amount, department, description, is_recurring_expenses) VALUES ($1, $2, $3, $4, $5) RETURNING *', [date, amount, department, description, is_recurring_expenses]);
+        const result = await pool.query(
+            'INSERT INTO transactions (date, amount, department, name, description, is_recurring_expense) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [date, amount, department, name, description, is_recurring_expense]
+        );
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Error adding data to the database');
+        console.error('Error adding transaction:', error);
+        res.status(500).send('Error adding transaction');
     }
 });
 
+const PORT = process.env.PORT || 5000; //added
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
