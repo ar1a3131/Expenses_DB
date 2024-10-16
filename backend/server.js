@@ -11,17 +11,17 @@ app.use(express.json());
 
 // Connect to PostgreSQL
 const pool = new Pool({
-    user: 'yourUsername',
-    host: 'localhost',
-    database: 'yourDatabaseName',
-    password: 'yourPassword',
+    user: '',
+    host: '',
+    database: 'BudgetDB',
+    password: 'Trace-Reroute4',
     port: 8080, // Default PostgreSQL port = 5432
 });
 
 // Routes
 app.get('/api/rows', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM yourTableName');
+        const result = await pool.query('SELECT * FROM transactions');
         res.json(result.rows);
     } catch (error) {
         console.error(error);
@@ -30,9 +30,9 @@ app.get('/api/rows', async (req, res) => {
 });
 
 app.post('/api/add-row', async (req, res) => {
-    const { column1, column2 } = req.body; // Adjust based on table structure
+    const { date, amount, department, description, is_recurring_expenses } = req.body; // Adjust based on table structure
     try {
-        const result = await pool.query('INSERT INTO yourTableName (column1, column2) VALUES ($1, $2) RETURNING *', [column1, column2]);
+        const result = await pool.query('INSERT INTO transactions (date, amount, department, description, is_recurring_expenses) VALUES ($1, $2, $3, $4, $5) RETURNING *', [date, amount, department, description, is_recurring_expenses]);
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error(error);
