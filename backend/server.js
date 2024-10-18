@@ -25,19 +25,23 @@ app.get('/api/filtered-rows', async (req, res) => {
     // Base query
     let query = 'SELECT * FROM transactions WHERE 1=1';
     const params = [];
+    let paramCounter = 1;
 
     // Add conditions based on the request query
     if (name) {
-        query += ' AND name ILIKE $1';
+        query += ` AND name ILIKE $${paramCounter}`;
         params.push(`%${name}%`);
+        paramCounter++;
     }
     if (department) {
-        query += ' AND department = $2';
+        query += ` AND department = $${paramCounter}`;
         params.push(department);
+        paramCounter++;
     }
-    if (is_recurring_expense) {
-        query += ' AND is_recurring_expense = $3';
+    if (is_recurring_expense !== undefined) {
+        query += ` AND is_recurring_expense = $${paramCounter}`;
         params.push(is_recurring_expense === 'true' ? '1' : '0');
+        paramCounter++;
     }
 
     try {
@@ -49,7 +53,7 @@ app.get('/api/filtered-rows', async (req, res) => {
     }
 });
 
-app.post('/api/add-transaction', async (req, res) => {
+app.post('/api/add-transaction', async (req, res) => { //puts data into table
     const { date, amount, department, name, description, is_recurring_expense } = req.body;
     try {
         const result = await pool.query(

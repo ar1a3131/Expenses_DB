@@ -1,5 +1,6 @@
+import logo from './logo.png';
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Request from './pages/Request';
 import Database from './pages/Database';
@@ -8,9 +9,14 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1>Expenses Database</h1>
-        {/*insert image here */}
-        <div>
+        {/* Header with Logo and Title */}
+        <header className="App-header">
+          <img src={logo} alt="Logo" className="App-logo" />
+          <h1>Expenses Database</h1>
+        </header>
+
+        {/* Navigation Links */}
+        <nav className="App-links">
           <Link to="/">
             <button>Home</button>
           </Link>
@@ -20,24 +26,22 @@ function App() {
           <Link to="/database">
             <button>Database</button>
           </Link>
-        </div>
+        </nav>
 
+        {/* Space between navigation and content */}
+        <br />
+        <br />
 
+        {/* Routes to render different pages */}
         <Routes>
-          <Route path="/" element={<div>Home Page</div>} />
+          <Route path="/" element={<div><br />Use this to submit purchase requests and to search through the database.</div>} />
           <Route path="/submit-request" element={<Request />} />
           <Route path="/database" element={<Database />} />
         </Routes>
-
-
       </div>
     </Router>
   );
-};
-
+}
 
 export default App;
-
-
-
 
