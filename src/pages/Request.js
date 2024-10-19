@@ -11,23 +11,35 @@ const Request = () => {
     const [department, setDepartment] = useState('');
     const [description, setDescription] = useState('');
     const [is_recurring_expense, setIsRecurring] = useState(0);
-
+    const [transactionIdToDelete, setTransactionIdToDelete] = useState('');
+    
+    
     // Handle form submission
     const handleSubmit = (event) => {
         event.preventDefault();
-
+    
         // Construct the date in 'MM/DD/YYYY' format
         const date = `${month}/${day}/${year}`;
-
+    
         // Validate the date
         if (!month || !day || !year) {
             alert("Please select a valid date.");
             return;
         }
-
-        console.log("Form Submitted:", { date, cost, department, name, description, is_recurring_expense });
-
-        axios.post('http://localhost:5000/api/add-transaction', { date, cost, department, name, description, is_recurring_expense })
+    
+        // Prepare the data to be sent to the backend
+        const transactionData = {
+            date,
+            amount: cost, // Use 'amount' instead of 'cost'
+            department,
+            name,
+            description,
+            is_recurring_expense
+        };
+    
+        console.log("Form Submitted:", transactionData);
+    
+        axios.post('http://localhost:5000/api/add-transaction', transactionData)
             .then(response => {
                 console.log('Transaction added:', response.data);
                 alert('Transaction submitted successfully!');
@@ -35,6 +47,27 @@ const Request = () => {
             })
             .catch(error => console.error('Error adding transaction:', error));
     };
+
+    // Handle delete transaction
+    const handleDelete = () => {
+        if (!transactionIdToDelete) {
+            alert('Please enter a transaction ID to delete.');
+            return;
+        }
+
+        axios.delete(`http://localhost:5000/api/delete-transaction/${transactionIdToDelete}`)
+            .then(response => {
+                console.log('Transaction deleted:', response.data);
+                alert(`Transaction ID ${transactionIdToDelete} deleted successfully!`);
+                setTransactionIdToDelete(''); // Clear the input after deletion
+            })
+            .catch(error => console.error('Error deleting transaction:', error));
+    };
+
+    const departments = [
+        "Adult Services", "AV", "Chester", "Circulation", "Communications",
+        "HBB", "IT Needs", "Passport", "South End", "Weed", "Youth"
+    ];
 
     // Clear form after submission
     const clearForm = () => {
@@ -110,14 +143,13 @@ const Request = () => {
                     />
                 </label>
                 <br />
-                <label>
-                    Department:
-                    <input
-                        type="text"
+                <Dropdown
+                        label="Department:"
+                        options={departments}
                         value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
+                        onChange={setDepartment}
+                        placeholder="Choose a department"
                     />
-                </label>
                 <br />
                 <label>
                     Employee Name:
@@ -148,6 +180,26 @@ const Request = () => {
                 <br />
                 <button type="submit">Submit</button>
             </form>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <h4>Delete a Transaction</h4>
+            <div>
+                <label>
+                    Transaction ID:
+                    <input
+                        type="text"
+                        value={transactionIdToDelete}
+                        onChange={(e) => setTransactionIdToDelete(e.target.value)}
+                        placeholder="Enter transaction ID"
+                    />
+                </label>
+                <button onClick={handleDelete}>Delete</button>
+            </div>
+
         </div>
     );
 };

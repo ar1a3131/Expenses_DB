@@ -81,6 +81,23 @@ app.post('/api/add-transaction', async (req, res) => { //puts data into table
     }
 });
 
+// Delete transaction by ID
+app.delete('/api/delete-transaction/:id', async (req, res) => {
+    const transactionId = req.params.id;
+
+    try {
+        const result = await pool.query('DELETE FROM transactions WHERE transaction_id = $1 RETURNING *', [transactionId]);
+        if (result.rowCount === 0) {
+            res.status(404).send(`Transaction ID ${transactionId} not found.`);
+        } else {
+            res.status(200).json({ message: `Transaction ID ${transactionId} deleted successfully.` });
+        }
+    } catch (error) {
+        console.error('Error deleting transaction:', error);
+        res.status(500).send('Error deleting transaction');
+    }
+});
+
 const PORT = process.env.PORT || 5000; //added
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
