@@ -20,7 +20,7 @@ const pool = new Pool({
 
 // Routes
 app.get('/api/filtered-rows', async (req, res) => {
-    const { name, department, is_recurring_expense } = req.query;
+    const { name, department, is_recurring_expense, month_since, year_since } = req.query;
 
     // Base query
     let query = 'SELECT * FROM transactions WHERE 1=1';
@@ -41,6 +41,20 @@ app.get('/api/filtered-rows', async (req, res) => {
     if (is_recurring_expense !== undefined) {
         query += ` AND is_recurring_expense = $${paramCounter}`;
         params.push(is_recurring_expense === 'true' ? '1' : '0');
+        paramCounter++;
+    }
+    
+    // Add month and year filtering
+    if (month_since && year_since) {
+        query += ` AND (EXTRACT(YEAR FROM TO_DATE(date, 'MM/DD/YYYY')) > $${paramCounter} OR 
+                        (EXTRACT(YEAR FROM TO_DATE(date, 'MM/DD/YYYY')) = $${paramCounter} AND 
+                         EXTRACT(MONTH FROM TO_DATE(date, 'MM/DD/YYYY')) >= $${paramCounter + 1}))`;
+        params.push(year_since);
+        params.push(month_since);
+        paramCounter += 2;
+    } else if (year_since) {
+        query += ` AND EXTRACT(YEAR FROM TO_DATE(date, 'MM/DD/YYYY')) >= $${paramCounter}`;
+        params.push(year_since);
         paramCounter++;
     }
 

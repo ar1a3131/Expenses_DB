@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: flex-start;
   padding: 10px;
-  background-color: #599ec5;
+  background-color: #303030;
   color: white;
 }
 
@@ -31,13 +31,13 @@ h1 {
   margin-right: 10px;
   padding: 10px 20px;
   font-size: 1rem;
-  background-color: #333f85;
+  background-color: #3f50b6;
   color: white;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
 }
 
 .App-links button:hover {
-  background-color: #45a049;
+  background-color: #072785;
 }

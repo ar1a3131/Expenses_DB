@@ -1,68 +1,105 @@
-//src/pages/Request.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import Dropdown from './Dropdown';
 
 const Request = () => {
-    const [date, setDate] = useState('');
+    const [month, setMonth] = useState('');
+    const [day, setDay] = useState('');
+    const [year, setYear] = useState('');
     const [cost, setCost] = useState('');
     const [name, setName] = useState('');
     const [department, setDepartment] = useState('');
     const [description, setDescription] = useState('');
-    const [is_recurring_expense, setIsRecurring] = useState('0');
+    const [is_recurring_expense, setIsRecurring] = useState(0);
 
-
+    // Handle form submission
     const handleSubmit = (event) => {
         event.preventDefault();
+
+        // Construct the date in 'MM/DD/YYYY' format
+        const date = `${month}/${day}/${year}`;
+
+        // Validate the date
+        if (!month || !day || !year) {
+            alert("Please select a valid date.");
+            return;
+        }
+
         console.log("Form Submitted:", { date, cost, department, name, description, is_recurring_expense });
-        axios.post('http://localhost:5000/api/add-transaction', { date, amount: cost, department, name, description, is_recurring_expense })
+
+        axios.post('http://localhost:5000/api/add-transaction', { date, cost, department, name, description, is_recurring_expense })
             .then(response => {
                 console.log('Transaction added:', response.data);
                 alert('Transaction submitted successfully!');
-
-                // Clear the form fields
-            setDate('');
-            setCost('');
-            setName('');
-            setDepartment('');
-            setDescription('');
-            setIsRecurring('0'); // or false if using a boolean
+                clearForm();
             })
             .catch(error => console.error('Error adding transaction:', error));
     };
 
-    const handleCheckboxChange = (event) => {
-        setIsRecurring(event.target.checked ? '1' : '0'); // Use '0' or '1' as strings
+    // Clear form after submission
+    const clearForm = () => {
+        setMonth('');
+        setDay('');
+        setYear('');
+        setCost('');
+        setName('');
+        setDepartment('');
+        setDescription('');
+        setIsRecurring(0);
     };
 
-    const departments = [
-        "Adult Services",
-        "AV",
-        "Chester",
-        "Circulation",
-        "Communications",
-        "HBB",
-        "IT Needs",
-        "Passport",
-        "South End",
-        "Weed",
-        "Youth"
+    // Month options
+    const months = [
+        { value: '01', label: 'January' },
+        { value: '02', label: 'February' },
+        { value: '03', label: 'March' },
+        { value: '04', label: 'April' },
+        { value: '05', label: 'May' },
+        { value: '06', label: 'June' },
+        { value: '07', label: 'July' },
+        { value: '08', label: 'August' },
+        { value: '09', label: 'September' },
+        { value: '10', label: 'October' },
+        { value: '11', label: 'November' },
+        { value: '12', label: 'December' }
     ];
+
+    // Day options (1-31)
+    const days = Array.from({ length: 31 }, (_, i) => ({
+        value: String(i + 1).padStart(2, '0'),
+        label: String(i + 1)
+    }));
 
     return (
         <div>
-            <h4>
-                Enter info to log purchase
-            </h4>
+            <h4>Enter purchase request details:</h4>
             <form onSubmit={handleSubmit}>
-                <label>
-                    Date of Request:
-                    <input
-                        type="text"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
+                <div className="date-inputs">
+                    <Dropdown
+                        label="Month:"
+                        options={months}
+                        value={month}
+                        onChange={setMonth}
+                        placeholder="Month"
                     />
-                </label>
+                    <Dropdown
+                        label="Day:"
+                        options={days}
+                        value={day}
+                        onChange={setDay}
+                        placeholder="Day"
+                    />
+                    <div className="year-input">
+                        <label>Year:</label>
+                        <input
+                            type="text"
+                            value={year}
+                            onChange={(e) => setYear(e.target.value)}
+                            placeholder="YYYY"
+                            maxLength="4"
+                        />
+                    </div>
+                </div>
                 <br />
                 <label>
                     Cost of Request:
@@ -73,14 +110,14 @@ const Request = () => {
                     />
                 </label>
                 <br />
-                <Dropdown
-                label="Select a Department"
-                options={departments}
-                value={department}
-                onChange={setDepartment}
-                placeholder="Choose a department"
-                />
-
+                <label>
+                    Department:
+                    <input
+                        type="text"
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
+                    />
+                </label>
                 <br />
                 <label>
                     Employee Name:
@@ -104,8 +141,8 @@ const Request = () => {
                     Recurring Expense:
                     <input
                         type="checkbox"
-                        checked={is_recurring_expense === '1'}
-                        onChange={handleCheckboxChange}
+                        checked={is_recurring_expense === 1}
+                        onChange={(e) => setIsRecurring(e.target.checked ? 1 : 0)}
                     />
                 </label>
                 <br />

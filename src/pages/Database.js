@@ -9,6 +9,9 @@ const Database = () => {
     const [name, setName] = useState('');
     const [department, setDepartment] = useState('');
     const [is_recurring_expense, setIsRecurring] = useState('0');
+    const [monthSince, setMonthSince] = useState('');
+    const [yearSince, setYearSince] = useState('');
+    const [totalExpenses, setTotalExpenses] = useState(0);
 
     // Fetch all data initially
     useEffect(() => {
@@ -31,10 +34,25 @@ const Database = () => {
         if (option === 'Recurring') {
             params.is_recurring_expense = is_recurring_expense === '1' ? 'true' : 'false';
         }
+        if (monthSince) {
+            params.month_since = monthSince;
+        }
+        if (yearSince) {
+            params.year_since = yearSince;
+        }
 
         axios.get('http://localhost:5000/api/filtered-rows', { params })
-            .then(response => setRows(response.data))
+            .then(response => {
+                setRows(response.data);
+                calculateTotal(response.data);
+            })
             .catch(error => console.error('Error fetching filtered data:', error));
+    };
+
+    // Calculate total expenses
+    const calculateTotal = (data) => {
+        const total = data.reduce((sum, row) => sum + parseFloat(row.amount), 0);
+        setTotalExpenses(total.toFixed(2)); // Format to 2 decimal places
     };
 
     // Handle checkbox change for recurring expense
@@ -48,13 +66,30 @@ const Database = () => {
         "HBB", "IT Needs", "Passport", "South End", "Weed", "Youth"
     ];
 
+    // Month options
+    const months = [
+        { value: '1', label: 'January' },
+        { value: '2', label: 'February' },
+        { value: '3', label: 'March' },
+        { value: '4', label: 'April' },
+        { value: '5', label: 'May' },
+        { value: '6', label: 'June' },
+        { value: '7', label: 'July' },
+        { value: '8', label: 'August' },
+        { value: '9', label: 'September' },
+        { value: '10', label: 'October' },
+        { value: '11', label: 'November' },
+        { value: '12', label: 'December' }
+    ];
+
     // Search criteria options
     const search_options = ["By name", "By department", "Recurring"];
 
     return (
-        <div>
+        <div className="database-page">
             <h4>Search through expenses database:</h4>
-            <form onSubmit={handleSubmit}>
+            <form className="form-container" onSubmit={handleSubmit}>
+                {/* Search Criterion Dropdown */}
                 <Dropdown
                     label="Select search criteria:"
                     options={search_options}
@@ -64,6 +99,7 @@ const Database = () => {
                 />
                 <br />
 
+                {/* Additional filters for name, department, and recurring expense */}
                 {option === 'By name' && (
                     <label>
                         Employee Name:
@@ -93,6 +129,27 @@ const Database = () => {
                         />
                     </label>
                 )}
+
+                {/* Separate filters for month and year */}
+                <div className="flex-container">
+                    <Dropdown
+                        label="Select start month:"
+                        options={months}
+                        value={monthSince}
+                        onChange={setMonthSince}
+                        placeholder="Month"
+                    />
+                    <label>
+                        Year Since:
+                        <input
+                            type="number"
+                            min="1900"
+                            value={yearSince}
+                            onChange={(e) => setYearSince(e.target.value)}
+                            placeholder="Year"
+                        />
+                    </label>
+                </div>
 
                 <br />
                 <button type="submit">Search</button>
@@ -124,6 +181,11 @@ const Database = () => {
                     ))}
                 </tbody>
             </table>
+
+            {/* Display total expenses */}
+            <div className="total-expenses">
+                <h4>Total Expenses: ${totalExpenses}</h4>
+            </div>
         </div>
     );
 };
