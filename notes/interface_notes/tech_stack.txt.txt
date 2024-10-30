@@ -1,0 +1,2 @@
+frontend: React
+backend: PostgreSQL, Node.js

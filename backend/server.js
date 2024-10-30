@@ -3,26 +3,34 @@ const cors = require('cors');
 const { Pool } = require('pg');
 
 const app = express();
-const port = 5000;
+const port = 5001; // Backend is using port 5001
 
 // Enable CORS for frontend communication
-app.use(cors());
-app.use(express.json());
+app.use(cors({ origin: '*' }));  // Allow all origins for testing purposes
+app.use(express.json()); // Enable JSON parsing for incoming requests
 
 // Connect to PostgreSQL
 const pool = new Pool({
     user: 'postgres',
-    host: 'localhost',
+    host: '10.100.10.249', // Update with the correct IP address of your database server
     database: 'BudgetDB',
     password: 'Trace-Reroute4',
-    port: 8080, // Default PostgreSQL port = 5432
+    port: 8080,  // Your PostgreSQL port
+});
+
+// Confirm the database connection is successful
+pool.connect((err) => {
+    if (err) {
+        console.error('Error connecting to the database:', err);
+    } else {
+        console.log('Connected to PostgreSQL database successfully!');
+    }
 });
 
 // Routes
 app.get('/api/filtered-rows', async (req, res) => {
     const { name, department, is_recurring_expense, month_since, year_since } = req.query;
 
-    // Base query
     let query = 'SELECT * FROM transactions WHERE 1=1';
     const params = [];
     let paramCounter = 1;
@@ -67,7 +75,7 @@ app.get('/api/filtered-rows', async (req, res) => {
     }
 });
 
-app.post('/api/add-transaction', async (req, res) => { //puts data into table
+app.post('/api/add-transaction', async (req, res) => {
     const { date, amount, department, name, description, is_recurring_expense } = req.body;
     try {
         const result = await pool.query(
@@ -98,7 +106,7 @@ app.delete('/api/delete-transaction/:id', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 5000; //added
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+// Start the server
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on http://0.0.0.0:${port}`);
 });

@@ -15,7 +15,7 @@ const Database = () => {
 
     // Fetch all data initially
     useEffect(() => {
-        axios.get('http://localhost:5000/api/rows')
+        axios.get('http://10.100.10.249:5001/api/rows') //IP ADDRESS
             .then(response => setRows(response.data))
             .catch(error => console.error('Error fetching data:', error));
     }, []);
@@ -40,8 +40,8 @@ const Database = () => {
         if (yearSince) {
             params.year_since = yearSince;
         }
-
-        axios.get('http://localhost:5000/api/filtered-rows', { params })
+//http://IP ADDRESS:port of the backend
+        axios.get('http://10.100.10.249:5001/api/filtered-rows', { params }) //IP ADDRESS
             .then(response => {
                 setRows(response.data);
                 calculateTotal(response.data);

@@ -39,7 +39,7 @@ const Request = () => {
     
         console.log("Form Submitted:", transactionData);
     
-        axios.post('http://localhost:5000/api/add-transaction', transactionData)
+        axios.post('http://10.100.10.249:500q/api/add-transaction', transactionData) //IP ADDRESS
             .then(response => {
                 console.log('Transaction added:', response.data);
                 alert('Transaction submitted successfully!');
@@ -55,7 +55,7 @@ const Request = () => {
             return;
         }
 
-        axios.delete(`http://localhost:5000/api/delete-transaction/${transactionIdToDelete}`)
+        axios.delete(`http://10.100.10.249:5001/api/delete-transaction/${transactionIdToDelete}`) //IP ADDRESS
             .then(response => {
                 console.log('Transaction deleted:', response.data);
                 alert(`Transaction ID ${transactionIdToDelete} deleted successfully!`);

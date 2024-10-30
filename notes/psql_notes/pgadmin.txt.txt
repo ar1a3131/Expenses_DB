@@ -1,0 +1,5 @@
+to insert data into a table, right click on the table name in object explorer, then Scripts->INSERT script, add data in VALUES(?);
+
+press the run button to save each change
+
+to check updated table, right click on table, then View/Edit Data-> All Rows
