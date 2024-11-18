@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Dropdown from './Dropdown';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const Request = () => {
     const [month, setMonth] = useState('');
     const [day, setDay] = useState('');
     const [year, setYear] = useState('');
-    const [cost, setCost] = useState('');
+    const [amount, setAmount] = useState('');
     const [name, setName] = useState('');
     const [department, setDepartment] = useState('');
     const [description, setDescription] = useState('');
@@ -29,17 +31,17 @@ const Request = () => {
     
         // Prepare the data to be sent to the backend
         const transactionData = {
-            date,
-            amount: cost, // Use 'amount' instead of 'cost'
-            department,
-            name,
-            description,
-            is_recurring_expense
+            date: date,
+            amount: amount, // Use 'amount' instead of 'cost'
+            department: department,
+            name: name,
+            description: description,
+            is_recurring_expense: is_recurring_expense
         };
     
         console.log("Form Submitted:", transactionData);
     
-        axios.post('http://10.100.10.249:500q/api/add-transaction', transactionData) //IP ADDRESS
+        axios.post(`${API_URL}/api/add-transaction`, transactionData) //IP ADDRESS
             .then(response => {
                 console.log('Transaction added:', response.data);
                 alert('Transaction submitted successfully!');
@@ -55,7 +57,7 @@ const Request = () => {
             return;
         }
 
-        axios.delete(`http://10.100.10.249:5001/api/delete-transaction/${transactionIdToDelete}`) //IP ADDRESS
+        axios.delete(`${API_URL}/api/delete-transaction/${transactionIdToDelete}`) //IP ADDRESS
             .then(response => {
                 console.log('Transaction deleted:', response.data);
                 alert(`Transaction ID ${transactionIdToDelete} deleted successfully!`);
@@ -74,7 +76,7 @@ const Request = () => {
         setMonth('');
         setDay('');
         setYear('');
-        setCost('');
+        setAmount('');
         setName('');
         setDepartment('');
         setDescription('');
@@ -105,7 +107,7 @@ const Request = () => {
 
     return (
         <div>
-            <h4>Enter purchase request details:</h4>
+            <h4>Enter urchase request details:</h4>
             <form onSubmit={handleSubmit}>
                 <div className="date-inputs">
                     <Dropdown
@@ -138,8 +140,8 @@ const Request = () => {
                     Cost of Request:
                     <input
                         type="text"
-                        value={cost}
-                        onChange={(e) => setCost(e.target.value)}
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
                     />
                 </label>
                 <br />

@@ -28,7 +28,7 @@ pool.connect((err) => {
 });
 
 // Routes
-app.get('/api/rows', async (req, res) => {
+app.get('/api/filtered-rows', async (req, res) => {
     const { name, department, is_recurring_expense, month_since, year_since } = req.query;
 
     let query = 'SELECT * FROM transactions WHERE 1=1';
