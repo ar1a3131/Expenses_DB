@@ -1,0 +1,5 @@
+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
+
+
+
+this is to be used in place of password for git commands

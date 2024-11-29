@@ -12,7 +12,7 @@ app.use(express.json()); // Enable JSON parsing for incoming requests
 // Connect to PostgreSQL
 const pool = new Pool({
     user: 'postgres',
-    host: '172.17.0.2', // Update with the correct IP address of your database server
+    host: '10.100.10.58', // Update with the correct IP address of your database server
     database: 'expensesdb',
     password: 'FergbLib2024!',
     port: 5432,  // Your PostgreSQL port

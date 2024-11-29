@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import Dropdown from './Dropdown';
@@ -107,7 +108,7 @@ const Request = () => {
 
     return (
         <div>
-            <h4>Enter urchase request details:</h4>
+            <h4>Enter purchase request details:</h4>
             <form onSubmit={handleSubmit}>
                 <div className="date-inputs">
                     <Dropdown

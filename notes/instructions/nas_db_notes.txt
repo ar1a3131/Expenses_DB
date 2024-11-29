@@ -1,0 +1,126 @@
+To enter nas in cmd: 
+ssh helpdesk@10.100.10.58 -p 5064
+
+password: 
+Fiction6-Wincing-Germproof
+
+
+Source code for the full stack code is in Helpdesk@F1-NAS2
+/volume1/ExpensesDB
+... I edited files using vim, if needed
+
+
+
+
+****************************************
+Access the PostgreSQL container from cmd: 
+sudo docker exec -it postgres-1 /bin/bash
+
+password: 
+Fiction6-Wincing-Germproof
+
+To enter database from PostgreSQL container: 
+psql -U postgres -d expensesdb
+
+To list the relations/tables:
+\d
+
+To see all data in a table:
+\d [table name]
+\d transactions
+
+TABLE NAME EXPENSES DATA IS ALL IN THE "transactions" TABLE:
+SELECT * FROM transactions;
+
+press crtl+d to exit from psql bash
+*****************************************************
+
+
+
+
+
+
+
+
+running the backend in NAS2/volume1/ExpensesDB/backend: node server.js
+
+
+ip address of PostgreSQL container: 172.17.0.2 -> only 10.100.10.58 worked
+
+to view data in json form: 
+http://10.100.10.58:5002/api/rows
+
+make sure to run backend with node server.js
+
+start and stop frontend:
+sudo docker stop react-frontend
+sudo docker start react-frontend
+
+
+To see all containers on the nas that are active:
+sudo docker ps
+
+
+
+------------------
+network for all the containers?:
+sudo docker network create my-network
+
+-----------------
+
+
+
+-----------------------------------------
+building backend docker image (make sure you have the Dockerfile):
+sudo docker build -t backend-app .
+
+create and run the backend container
+sudo docker run --name backend-container \
+    -v /volume1/ExpensesDB/backend:/app \
+    -v /volume1/ExpensesDB/backend/.env:/app/.env \
+    -w /app \
+    -p 5002:5002 \
+    -d backend-app
+
+------------------------------------------
+
+
+
+
+
+
+
+
+
+***************************
+REFRESHING REACT CODE (only method I've found to work, but takes a few minutes):
+-
+npm run build
+
+-firstly, stop the container:
+sudo docker stop react-frontend
+
+enter password:
+Fiction6-Wincing-Germproof
+
+
+-remove currently running container to avoid conflicts:
+sudo docker rm react-frontend
+
+
+-rebuild react code:
+sudo docker build -t my-react-app .
+
+-run the docker container: 
+sudo docker run -d -p 3000:3000 --name react-frontend my-react-app
+
+-testing that backend is working:
+curl http://10.100.10.58:5002/api/rows
+^ make sure you run node server.js in another window
+
+ENVIRONMENT VARIABLES ARE HARDCODED IN FILE BY NAME .env IF YOU NEED TO CHANGE PORT NUMBERS/IP ADDRESSES/DB_USER/DB_PASSWORD
+
+
+^same commands should apply to the backend container, just instead of "react-frontend", use "expensesdb-backend"
+
+

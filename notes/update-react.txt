@@ -1,0 +1,4 @@
+In volume1/ExpensesDB, run ./update-react.sh everytime you want to have the updated code show up in
+the website
+
+You can disregard the steps I included in nas_db_notes.txt regarding "refreshing the react code"

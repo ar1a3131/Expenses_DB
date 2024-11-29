@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -5,17 +6,24 @@ const { Pool } = require('pg');
 const app = express();
 const port = 5002; // Backend is using port 5002
 
+const API_URL = process.env.REACT_APP_API_URL;
+const USER = process.env.DB_USER;
+const HOST = process.env.DB_HOST;
+const DB_NAME = process.env.DB_NAME;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const PORT = process.env.DB_PORT;
+
 // Enable CORS for frontend communication
 app.use(cors({ origin: '*' }));  // Allow all origins for testing purposes
 app.use(express.json()); // Enable JSON parsing for incoming requests
 
 // Connect to PostgreSQL
 const pool = new Pool({
-    user: 'postgres',
-    host: '172.17.0.2', // Update with the correct IP address of your database server
-    database: 'expensesdb',
-    password: 'FergbLib2024!',
-    port: 5432,  // Your PostgreSQL port
+    user: USER,
+    host: HOST, // Update with the correct IP address of your database server
+    database: DB_NAME,
+    password: DB_PASSWORD,
+    port: PORT,  // Your PostgreSQL port
 });
 
 // Confirm the database connection is successful

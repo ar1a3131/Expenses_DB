@@ -1,7 +1,7 @@
-# Use an official Node.js runtime as the base image
-FROM node:14
+# Use an official Node.js runtime for the build stage
+FROM node:14 AS build
 
-# Set the working directory in the container
+# Set the working directory in the build container
 WORKDIR /app
 
 # Copy package.json and package-lock.json
@@ -16,12 +16,18 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-# Install a simple HTTP server to serve static files
-RUN npm install -g serve
+# Use a lightweight web server image for the final container
+FROM nginx:stable-alpine
 
-# Expose port 3000 to the host
-EXPOSE 3000
+# Copy the React build files to the NGINX web root
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Serve the app on port 3000
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Replace the default NGINX configuration to use port 3000
+RUN sed -i 's/listen 80;/listen 3000;/' /etc/nginx/conf.d/default.conf
+
+# Expose port 3000
+EXPOSE 80
+
+# Start the NGINX server
+CMD ["nginx", "-g", "daemon off;"]
 

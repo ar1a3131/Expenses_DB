@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Dropdown from './Dropdown';
@@ -81,7 +82,7 @@ const Database = () => {
 
     return (
         <div className="database-page">
-            <h4>Search through expenses database:</h4>
+            <h4>Search expenses database:</h4>
             <form className="form-container" onSubmit={handleSubmit}>
                 <Dropdown label="Select search criteria:" options={searchOptions} value={option} onChange={setOption} placeholder="Select" />
                 {option === 'By name' && (
@@ -115,7 +116,9 @@ const Database = () => {
                         <th>Date</th>
                         <th>Amount</th>
                         <th>Department</th>
+						<th>Name</th>
                         <th>Description</th>
+						<th>Recurring?</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -125,7 +128,9 @@ const Database = () => {
                             <td>{row.date}</td>
                             <td>{row.amount}</td>
                             <td>{row.department}</td>
+							<td>{row.name}</td>
                             <td>{row.description}</td>
+							<td>{row.is_recurring_expenses}</td>
                         </tr>
                     ))}
                 </tbody>
