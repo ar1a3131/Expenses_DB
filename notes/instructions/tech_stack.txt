@@ -1,3 +1,0 @@
-frontend: React (the container react-frontend, image:my-react-app)
-backend: Node.js
-Database: PostgreSQL (the container on NAS2 is postgres-1, image: postgres:latest)

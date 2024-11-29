@@ -1,7 +1,0 @@
-personal log, started 11/27/2024:
-
-changed pg_hba.conf (/etc/postgresql) to allow connactions from any ip address (11/27/2024)
-
-sudo docker stop postgres-1
-sudo docker rm postgres-1
-sudo docker run -d --name postgres-1 -p 32771:5432 -e POSTGRES_PASSWORD=FergLib2024! -e POSTGRES_DB=expensesdb postgres:latest

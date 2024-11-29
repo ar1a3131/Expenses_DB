@@ -1,9 +1,0 @@
-to_fix
-
-1. Helpdesk@F1-NAS2:/volume1/ExpensesDB$  sudo netstat -tuln | grep 5432
-Password:
-tcp        0      0 127.0.0.1:5432          0.0.0.0:*               LISTEN
-
-^need to get rid of that listening port^
-
-2. have reliable data backup besides the PostgreSQL volume in the NAS (explained in data_recovery.txt) 
